@@ -43,7 +43,7 @@ end
 			タイトル: <input class="field" name="title" tabindex="5"<%= accesskeys['title'] %> size="40" value="<%=h @diary.title %>">
 		</div>
 		<div class="textarea">
-			本文(<%=h @conf.style %>スタイル<%%= style_howto %>):<textarea name="body" tabindex="6"<%= accesskeys['body'] %> cols="70" rows="15"><%=h @diary.to_src %></textarea>
+			本文(<%=h @conf.style %>スタイル<%%= style_howto %>):<textarea id="body" name="body" tabindex="6"<%= accesskeys['body'] %> cols="70" rows="15"><%=h @diary.to_src %></textarea>
 		</div>
 		<%%=edit_proc( @date )%>
 		<span class="button preview">
