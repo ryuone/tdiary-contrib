@@ -89,7 +89,7 @@ once do
 					r << %Q[<article class="section">\n]
 					r << %Q[<%= section_enter_proc( Time::at( #{date.to_i} ) ) %>\n]
 					if section.subtitle then
-						r << %Q[<h1><%= subtitle_proc( Time::at( #{date.to_i} ), #{section.subtitle.dump.gsub( /%/, '\\\\045' )} ) %></h1>\n]
+						r << %Q[<h3><%= subtitle_proc( Time::at( #{date.to_i} ), #{section.subtitle.dump.gsub( /%/, '\\\\045' )} ) %></h3>\n]
 					end
 					if /^</ =~ section.body then
 						r << %Q[#{section.body}]

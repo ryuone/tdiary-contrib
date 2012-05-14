@@ -1,6 +1,6 @@
 <%# diary.rhtml %><%% @anchor_name = <%=opt['anchor'] || false%> %>
 <article class="day autopagerize_page_element">
-<h1><%%= title_proc( Time::at( <%=@date.to_i%> ), <%= title.dump.gsub( /%/, '\\\\045' ) %> ) %></h1>
+<h3><%%= title_proc( Time::at( <%=@date.to_i%> ), <%= title.dump.gsub( /%/, '\\\\045' ) %> ) %></h3>
 
 <div class="body">
 <%%= body_enter_proc( Time::at( <%=@date.to_i%> ) ) %>
