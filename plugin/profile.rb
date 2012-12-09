@@ -14,7 +14,6 @@ require 'timeout'
 require 'rexml/document'
 require 'open-uri'
 require 'digest/md5'
-#require 'yaml/store'
 require 'pstore'
 
 module ::Profile
@@ -79,17 +78,30 @@ module ::Profile
 
     # github.com
     class GitHub < Base
-      property :name, '//user/name'
-      property :mail, '//user/email'
-      endpoint {|id| "http://github.com/api/v2/xml/user/show/#{id}" }
+      property :name, 'name'
+      property :mail, 'email'
+      endpoint {|id| "https://api.github.com/users/#{id}" }
 
       def image
-        Gravatar.new(@mail, @options).image
         # "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(@mail)}.jpg"
+        Gravatar.new(@mail, @options).image
       end
 
       def link
         "http://github.com/#{@id}"
+      end
+
+      def fetch(endpoint)
+        require 'json'
+        timeout(5) do
+          doc = open(endpoint) {|f| JSON.parse(f.read) }
+        end
+      end
+
+      def parse(doc)
+        self.class.properties.each do |property, key|
+          instance_variable_set("@#{property}", doc[key]) if doc[key]
+        end
       end
     end
 
@@ -147,15 +159,6 @@ module ::Profile
       end
     end
 
-    class Wassr < Base
-      property :image, '//statuses/status/user/profile_image_url'
-      endpoint {|id| "http://api.wassr.jp/statuses/show.xml?id=#{id}" }
-
-      def link
-        "http://wassr.jp/user/#{id}"
-      end
-    end
-
     class Hatena < Base
       def image
         prefix = id[0..1]
@@ -180,7 +183,6 @@ def profile(id, service = :twitter, options = {})
     :friendfeed => Profile::Service::FriendFeed,
     :iddy => Profile::Service::Iddy,
     :gravatar => Profile::Service::Gravatar,
-    :wassr => Profile::Service::Wassr,
     :hatena => Profile::Service::Hatena,
   }[service.to_s.downcase.to_sym]
 
@@ -218,4 +220,3 @@ def profile(id, service = :twitter, options = {})
   html << %Q{ <span class="profile-description">#{CGI.escapeHTML profile.description}</span> } if profile.description
   html << %Q{ </a></div> }
 end
-
